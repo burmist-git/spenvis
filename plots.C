@@ -39,48 +39,51 @@ Int_t plots(){
   //max
   TGraph *gr_tot_max_e = new TGraph();
   TGraph *gr_dif_max_e = new TGraph();
-  load_data_file("./data/max_p.dat", gr_tot_max_e, gr_dif_max_e,hMin,hMax);
+  TGraph *gr_dif_max_e_norm = new TGraph();
+  load_data_file("./data/max_e.dat", gr_tot_max_e, gr_dif_max_e,hMin,hMax);
+  load_data_file("./data/max_e.dat", gr_tmp, gr_dif_max_e_norm,hMin,hMax);
   //
   //550
   TGraph *gr_tot_550km_e = new TGraph();
   TGraph *gr_dif_550km_e = new TGraph();
   TGraph *gr_dif_550km_e_norm = new TGraph();
   TGraph *gr_dif_550km_e_copy = new TGraph();
-  load_data_file("./data/550_km_p.dat", gr_tot_550km_e, gr_dif_550km_e,hMin,hMax);
-  load_data_file("./data/550_km_p.dat", gr_tmp, gr_dif_550km_e_norm,hMin,hMax);
-  load_data_file("./data/550_km_p.dat", gr_tmp, gr_dif_550km_e_copy,hMin,hMax);
+  load_data_file("./data/550_km_e.dat", gr_tot_550km_e, gr_dif_550km_e,hMin,hMax);
+  load_data_file("./data/550_km_e.dat", gr_tmp, gr_dif_550km_e_norm,hMin,hMax);
+  load_data_file("./data/550_km_e.dat", gr_tmp, gr_dif_550km_e_copy,hMin,hMax);
   norm_graph(gr_dif_550km_e_norm, gr_dif_550km_e);
+  norm_graph(gr_dif_max_e_norm, gr_dif_550km_e);
   //
   //545
   TGraph *gr_tot_545km_e = new TGraph();
   TGraph *gr_dif_545km_e = new TGraph();
   TGraph *gr_dif_545km_e_norm = new TGraph();
-  load_data_file("./data/545_km_p.dat", gr_tot_545km_e, gr_dif_545km_e,hMin,hMax);
-  load_data_file("./data/545_km_p.dat", gr_tmp, gr_dif_545km_e_norm,hMin,hMax);
+  load_data_file("./data/545_km_e.dat", gr_tot_545km_e, gr_dif_545km_e,hMin,hMax);
+  load_data_file("./data/545_km_e.dat", gr_tmp, gr_dif_545km_e_norm,hMin,hMax);
   norm_graph(gr_dif_545km_e_norm, gr_dif_550km_e);
   //
   //540
   TGraph *gr_tot_540km_e = new TGraph();
   TGraph *gr_dif_540km_e = new TGraph();
   TGraph *gr_dif_540km_e_norm = new TGraph();
-  load_data_file("./data/540_km_p.dat", gr_tot_540km_e, gr_dif_540km_e,hMin,hMax);
-  load_data_file("./data/540_km_p.dat", gr_tmp, gr_dif_540km_e_norm,hMin,hMax);
+  load_data_file("./data/540_km_e.dat", gr_tot_540km_e, gr_dif_540km_e,hMin,hMax);
+  load_data_file("./data/540_km_e.dat", gr_tmp, gr_dif_540km_e_norm,hMin,hMax);
   norm_graph(gr_dif_540km_e_norm, gr_dif_550km_e);
   //
   //535
   TGraph *gr_tot_535km_e = new TGraph();
   TGraph *gr_dif_535km_e = new TGraph();
   TGraph *gr_dif_535km_e_norm = new TGraph();
-  load_data_file("./data/535_km_p.dat", gr_tot_535km_e, gr_dif_535km_e,hMin,hMax);
-  load_data_file("./data/535_km_p.dat", gr_tmp, gr_dif_535km_e_norm,hMin,hMax);
+  load_data_file("./data/535_km_e.dat", gr_tot_535km_e, gr_dif_535km_e,hMin,hMax);
+  load_data_file("./data/535_km_e.dat", gr_tmp, gr_dif_535km_e_norm,hMin,hMax);
   norm_graph(gr_dif_535km_e_norm, gr_dif_550km_e);
   //
   //525
   TGraph *gr_tot_525km_e = new TGraph();
   TGraph *gr_dif_525km_e = new TGraph();
   TGraph *gr_dif_525km_e_norm = new TGraph();
-  load_data_file("./data/525_km_p.dat", gr_tot_525km_e, gr_dif_525km_e,hMin,hMax);
-  load_data_file("./data/525_km_p.dat", gr_tmp, gr_dif_525km_e_norm,hMin,hMax);
+  load_data_file("./data/525_km_e.dat", gr_tot_525km_e, gr_dif_525km_e,hMin,hMax);
+  load_data_file("./data/525_km_e.dat", gr_tmp, gr_dif_525km_e_norm,hMin,hMax);
   norm_graph(gr_dif_525km_e_norm, gr_dif_550km_e);
   //
   TCanvas *c1 = new TCanvas("c1","c1",10,10,600,600);
@@ -101,6 +104,7 @@ Int_t plots(){
   mg->Add(gr_dif_540km_e_norm);
   mg->Add(gr_dif_535km_e_norm);
   mg->Add(gr_dif_525km_e_norm);
+  //mg->Add(gr_dif_max_e_norm);
   //mg->SetMinimum(1.0e-2);
   mg->SetMinimum(0.0);
   mg->SetMaximum(1.1);
