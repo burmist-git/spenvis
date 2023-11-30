@@ -57,7 +57,10 @@ Int_t log_parabola_fit_MAGIC_tel_crab(){
   inParameters[3] = -0.24;
   TF1 *f_log_parabola = new TF1( "f_log_parabola", log_parabola, e_min, e_max, npar);
   f_log_parabola->SetParameters(inParameters);
+  f_log_parabola->FixParameter(0,inParameters[0]);
   f_log_parabola->FixParameter(1,inParameters[1]);
+  f_log_parabola->FixParameter(2,inParameters[2]);
+  f_log_parabola->FixParameter(3,inParameters[3]);
   gr_tev->Fit("f_log_parabola","","",e_min, e_max);
   //
   TCanvas *c1 = new TCanvas("c1","https://arxiv.org/pdf/1406.6892.pdf",10,10,600,600);
