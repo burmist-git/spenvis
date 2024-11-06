@@ -105,7 +105,7 @@ Int_t flux_crab(){
   leg->AddEntry(gr_modiﬁed_log_parabola, "Modiﬁed log parabola fit", "apl");
   //
   leg->Draw();
-
+  //
   //
   c1->cd(2);
   gPad->SetGridx();
