@@ -23,6 +23,8 @@
 #include <string>
 #include <iomanip>
 #include <time.h>
+#include <vector>
+#include <assert.h>
 
 using namespace std;
 
@@ -42,6 +44,9 @@ void logalyze(TGraphErrors *gr, TGraphErrors *gr_log);
 void logalyze(TGraph *gr, TGraphErrors *gr_log);
 //
 Double_t eff_area_f(Double_t *x, Double_t *par);
+
+template <class T>
+void save_gr_to_csv( T *gr_wf, TString csv_file_out, bool csv_format = true);
 
 Int_t plots_LST_Crab_paper_eff(){
   //
@@ -614,6 +619,15 @@ Int_t plots_LST_Crab_paper_eff(){
   //
   //
   //
+  save_gr_to_csv<TGraph>(gr_trg_effArea_fit, "gr_trg_effArea_fit.csv");
+  save_gr_to_csv<TGraph>(gr_trg_effArea_AdvCam_fit, "gr_trg_effArea_AdvCam_fit.csv");
+  save_gr_to_csv<TGraph>(gr_trg_effArea_AdvCam_vs_PMT_fit, "gr_trg_effArea_AdvCam_vs_PMT_fit.csv");
+  save_gr_to_csv<TGraphErrors>(gr_gamma_rates_trg_LST,"gr_gamma_rates_trg_LST.csv");
+  save_gr_to_csv<TGraphErrors>(gr_gamma_rates_trg_LST_AdvCam,"gr_gamma_rates_trg_LST_AdvCam.csv");
+  //  
+  //
+  //
+  //
   return 0;
 }
 
@@ -882,4 +896,30 @@ void get_crab_gamma_rate(TGraphErrors *gr_gamma_rate_LST, TGraph *gr_trg_effArea
     gr_gamma_rate_LST->SetPointError(i,0.0,0.0);
     gr_gamma_rate_LST_AdvCam->SetPoint(i,xx,gr_trg_effArea_msq_vs_TeV->Eval(xx)*10000.0*modiﬁed_log_parabola_TeV(xx));    
   }
+}
+
+template <class T>
+void save_gr_to_csv( T *gr_wf, TString csv_file_out, bool csv_format){
+  //if (typeid(T) == typeid(TGraph))
+  //cout<<"T = TGraph"<<endl;
+  //if (typeid(T) == typeid(TGraphErrors))
+  //cout<<"T = TGraphErrors"<<endl;
+  Double_t xx;
+  Double_t yy;
+  ofstream csvfile;
+  csvfile.open (csv_file_out.Data());
+  if(csv_format){
+    csvfile<<"xx,yy"<<std::endl;
+    for(Int_t i = 0;i<gr_wf->GetN();i++){
+      gr_wf->GetPoint(i,xx,yy);
+      csvfile<<xx<<","<<yy<<std::endl;
+    }
+  }
+  else{
+    for(Int_t i = 0;i<gr_wf->GetN();i++){
+      gr_wf->GetPoint(i,xx,yy);
+      csvfile<<xx<<" "<<yy<<std::endl;
+    }
+  }
+  csvfile.close();
 }
