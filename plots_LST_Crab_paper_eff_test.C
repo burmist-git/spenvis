@@ -50,7 +50,7 @@ void save_gr_to_csv( T *gr_wf, TString csv_file_out, bool csv_format = true);
 template <class T>
 void get_gr_ratio( T *gr_num, T *gr_den, T *gr_r, Int_t np, Double_t eMin_TeV, Double_t eMax_TeV);
 
-Int_t plots_LST_Crab_paper_eff(){
+Int_t plots_LST_Crab_paper_eff_test(){
   //
   Double_t eMin_TeV = 0.02;
   Double_t eMax_TeV = 20.0;  
@@ -79,11 +79,13 @@ Int_t plots_LST_Crab_paper_eff(){
   TGraph *gr_trg_effArea = new TGraph();
   TGraphErrors *gr_trg_effArea_log = new TGraphErrors();
   //
-  Int_t np_sim_LST_AdvCam, np_trg_LST_AdvCam;
+  Int_t np_sim_LST_AdvCam, np_trg_LST_AdvCam, np_trg_LST_AdvCam_stereo; 
   Double_t eMin_sim_LST_AdvCam, eMax_sim_LST_AdvCam, integral_sim_LST_AdvCam;
   Double_t eMin_trg_LST_AdvCam, eMax_trg_LST_AdvCam, integral_trg_LST_AdvCam;
+  Double_t eMin_trg_LST_AdvCam_stereo, eMax_trg_LST_AdvCam_stereo, integral_trg_LST_AdvCam_stereo;
   TGraphErrors *gr_sim_LST_AdvCam = new TGraphErrors();
   TGraphErrors *gr_trg_LST_AdvCam = new TGraphErrors();
+  TGraphErrors *gr_trg_LST_AdvCam_stereo = new TGraphErrors();
   TGraphErrors *gr_trg_eff_AdvCam = new TGraphErrors();
   TGraphErrors *gr_trg_effArea_AdvCam = new TGraphErrors();
   TGraphErrors *gr_trg_effArea_AdvCam_log = new TGraphErrors();
@@ -103,16 +105,20 @@ Int_t plots_LST_Crab_paper_eff(){
       <<"integral_sim "<<integral_sim<<endl;
   //
   //
-  load_data_file("./data/LST_AdvCam_Zenith_20.00deg_sim.csv", gr_sim_LST_AdvCam, np_sim_LST_AdvCam, eMin_sim_LST_AdvCam, eMax_sim_LST_AdvCam, integral_sim_LST_AdvCam);
+  //load_data_file("./data/LST_AdvCam_Zenith_20.00deg_sim.csv", gr_sim_LST_AdvCam, np_sim_LST_AdvCam, eMin_sim_LST_AdvCam, eMax_sim_LST_AdvCam, integral_sim_LST_AdvCam);
+  load_data_file("../CTA/DBscan_on_simtel_data/LST_AdvCam_Zenith_20.00deg_sim.csv", gr_sim_LST_AdvCam, np_sim_LST_AdvCam, eMin_sim_LST_AdvCam, eMax_sim_LST_AdvCam, integral_sim_LST_AdvCam);
   cout<<"np_sim_LST_AdvCam       "<<np_sim_LST_AdvCam<<endl
       <<"eMin_sim_LST_AdvCam     "<<eMin_sim_LST_AdvCam<<endl
       <<"eMax_sim_LST_AdvCam     "<<eMax_sim_LST_AdvCam<<endl
       <<"integral_sim_LST_AdvCam "<<integral_sim_LST_AdvCam<<endl;
-  load_data_file("./data/LST_AdvCam_Zenith_20.00deg_trg.csv", gr_trg_LST_AdvCam, np_trg_LST_AdvCam, eMin_trg_LST_AdvCam, eMax_trg_LST_AdvCam, integral_trg_LST_AdvCam);
+  //load_data_file("./data/LST_AdvCam_Zenith_20.00deg_trg.csv", gr_trg_LST_AdvCam, np_trg_LST_AdvCam, eMin_trg_LST_AdvCam, eMax_trg_LST_AdvCam, integral_trg_LST_AdvCam);
+  //load_data_file("../CTA/DBscan_on_simtel_data/LST_AdvCam_Zenith_20.00deg_trg.csv", gr_trg_LST_AdvCam, np_trg_LST_AdvCam, eMin_trg_LST_AdvCam, eMax_trg_LST_AdvCam, integral_trg_LST_AdvCam);
+  load_data_file("../CTA/DBscan_on_simtel_data/LST_AdvCam_Zenith_20.00deg_trg_stereo.csv", gr_trg_LST_AdvCam, np_trg_LST_AdvCam, eMin_trg_LST_AdvCam, eMax_trg_LST_AdvCam, integral_trg_LST_AdvCam);
   cout<<"np_trg_LST_AdvCam       "<<np_trg_LST_AdvCam<<endl
       <<"eMin_trg_LST_AdvCam     "<<eMin_trg_LST_AdvCam<<endl
       <<"eMax_trg_LST_AdvCam     "<<eMax_trg_LST_AdvCam<<endl
-      <<"integral_trg_LST_AdvCam "<<integral_trg_LST_AdvCam<<endl;  
+      <<"integral_trg_LST_AdvCam "<<integral_trg_LST_AdvCam<<endl;
+  load_data_file("../CTA/DBscan_on_simtel_data/LST_AdvCam_Zenith_20.00deg_trg_stereo.csv", gr_trg_LST_AdvCam_stereo, np_trg_LST_AdvCam_stereo, eMin_trg_LST_AdvCam_stereo, eMax_trg_LST_AdvCam_stereo, integral_trg_LST_AdvCam_stereo);
   //
   get_eff(gr_sim_LST_AdvCam, gr_trg_LST_AdvCam, gr_trg_eff_AdvCam, 50, 0.005, 50.0);  
   get_eff_area(gr_sim_LST_AdvCam, gr_trg_LST_AdvCam, gr_trg_effArea_AdvCam, 50, 0.005, 50.0, TMath::Pi()*800.0*800.0);    
@@ -455,7 +461,12 @@ Int_t plots_LST_Crab_paper_eff(){
   gPad->SetLogx();
   //
   TGraph *gr_log = new TGraph();
-  fill_log_test(gr_log, 100, 0.005, 50.0, 6.01082e+00, 8.43731e+00, 3.88802e+00,-2.54485e+00);
+  // n_points > 8
+  //fill_log_test(gr_log, 100, 0.005, 50.0, 6.00122e+00, 9.38487e+00, 3.86746e+00,-2.64437e+00);                                     
+  // n_points > 7
+  //fill_log_test(gr_log, 100, 0.005, 50.0, 6.01082e+00, 8.43731e+00, 3.88802e+00,-2.54485e+00);
+  // n_points > 6
+  fill_log_test(gr_log, 100, 0.005, 50.0, 6.00037e+00, 1.38319e+01, 4.18656e+00,-2.81400e+00);
   //
   //logalyze(gr_trg_effArea_AdvCam, gr_trg_effArea_AdvCam_log);
   //
@@ -629,12 +640,19 @@ Int_t plots_LST_Crab_paper_eff(){
   //
   //
   //
+  //save_gr_to_csv<TGraph>(gr_trg_effArea_fit, "gr_trg_effArea_fit.csv");
+  //save_gr_to_csv<TGraph>(gr_trg_effArea_AdvCam_fit, "gr_trg_effArea_AdvCam_fit.csv");
+  //save_gr_to_csv<TGraph>(gr_trg_effArea_AdvCam_vs_PMT_fit, "gr_trg_effArea_AdvCam_vs_PMT_fit.csv");
+  //save_gr_to_csv<TGraphErrors>(gr_gamma_rates_trg_LST,"gr_gamma_rates_trg_LST.csv");
+  //save_gr_to_csv<TGraphErrors>(gr_gamma_rates_trg_LST_AdvCam,"gr_gamma_rates_trg_LST_AdvCam.csv");
+  //save_gr_to_csv<TGraphErrors>(gr_gamma_rates_trg_PMT_vs_AdvCam_ratio,"gr_gamma_rates_trg_PMT_vs_AdvCam_ratio.csv");
+  //
   save_gr_to_csv<TGraph>(gr_trg_effArea_fit, "gr_trg_effArea_fit.csv");
-  save_gr_to_csv<TGraph>(gr_trg_effArea_AdvCam_fit, "gr_trg_effArea_AdvCam_fit.csv");
-  save_gr_to_csv<TGraph>(gr_trg_effArea_AdvCam_vs_PMT_fit, "gr_trg_effArea_AdvCam_vs_PMT_fit.csv");
+  save_gr_to_csv<TGraph>(gr_trg_effArea_AdvCam_fit, "gr_trg_effArea_AdvCam_fit_stereo.csv");
+  save_gr_to_csv<TGraph>(gr_trg_effArea_AdvCam_vs_PMT_fit, "gr_trg_effArea_AdvCam_vs_PMT_fit_stereo.csv");
   save_gr_to_csv<TGraphErrors>(gr_gamma_rates_trg_LST,"gr_gamma_rates_trg_LST.csv");
-  save_gr_to_csv<TGraphErrors>(gr_gamma_rates_trg_LST_AdvCam,"gr_gamma_rates_trg_LST_AdvCam.csv");
-  save_gr_to_csv<TGraphErrors>(gr_gamma_rates_trg_PMT_vs_AdvCam_ratio,"gr_gamma_rates_trg_PMT_vs_AdvCam_ratio.csv");
+  save_gr_to_csv<TGraphErrors>(gr_gamma_rates_trg_LST_AdvCam,"gr_gamma_rates_trg_LST_AdvCam_stereo.csv");
+  save_gr_to_csv<TGraphErrors>(gr_gamma_rates_trg_PMT_vs_AdvCam_ratio,"gr_gamma_rates_trg_PMT_vs_AdvCam_ratio_stereo.csv");
   //  
   //
   //

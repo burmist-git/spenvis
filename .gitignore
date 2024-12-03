@@ -1,2 +1,7 @@
 *~
 *.pdf
+gr_gamma_rates_trg_LST_AdvCam_stereo.csv
+gr_gamma_rates_trg_PMT_vs_AdvCam_ratio.csv
+gr_gamma_rates_trg_PMT_vs_AdvCam_ratio_stereo.csv
+gr_trg_effArea_AdvCam_fit_stereo.csv
+gr_trg_effArea_AdvCam_vs_PMT_fit_stereo.csv
