@@ -31,6 +31,12 @@ using namespace std;
 template <class T>
 void load_data_file( TString fileInName, T *gr, Int_t &np, Double_t &thMin, Double_t &thMax, Double_t &integral);
 
+template <class T>
+void operation_graph( Double_t (*operation)(Double_t, Double_t), T *gr1, T *gr2, T *grs, Int_t n, Double_t xmin, Double_t xmax);
+Double_t add(Double_t a, Double_t b) {return a + b;}
+Double_t subtract(Double_t a, Double_t b) {return a - b;}
+Double_t multiply(Double_t a, Double_t b) {return a * b;}
+
 Int_t plots_lst_L1_trigger(){
   //
   Int_t np;
@@ -39,12 +45,16 @@ Int_t plots_lst_L1_trigger(){
   Double_t integral;
   //
   TGraph *gr_lst_L1_trigger_rate = new TGraph();
+  TGraph *gr_lst_L1_trigger_DCR_rate = new TGraph();
   TGraph *gr_P_DAMPE_lst_L1_trigger_rate = new TGraph();
   TGraph *gr_He_DAMPE_lst_L1_trigger_rate = new TGraph();
+  TGraph *gr_P_He_DAMPE_lst_L1_trigger_rate = new TGraph();
   //
   load_data_file<TGraph>( "./data/lst_L1_trigger_simulation_P_He_DAMPE.dat", gr_lst_L1_trigger_rate, np, thMin, thMax, integral);
   load_data_file<TGraph>("./data/P_DAMPE_lst_L1_trigger.dat", gr_P_DAMPE_lst_L1_trigger_rate, np, thMin, thMax, integral);
   load_data_file<TGraph>("./data/He_DAMPE_lst_L1_trigger.dat", gr_He_DAMPE_lst_L1_trigger_rate, np, thMin, thMax, integral);
+  operation_graph<TGraph>( add, gr_P_DAMPE_lst_L1_trigger_rate, gr_He_DAMPE_lst_L1_trigger_rate, gr_P_He_DAMPE_lst_L1_trigger_rate, 1000, 10.0/6.5, 1000.0/6.5);
+  operation_graph<TGraph>( subtract, gr_lst_L1_trigger_rate, gr_P_He_DAMPE_lst_L1_trigger_rate, gr_lst_L1_trigger_DCR_rate, 1000, 10.0/6.5, 1000.0/6.5);
   //
   TCanvas *c1 = new TCanvas("c1","c1",10,10,1200,600);
   gStyle->SetPalette(1);
@@ -82,7 +92,9 @@ Int_t plots_lst_L1_trigger(){
   mg01->Add(gr_lst_L1_trigger_rate);
   mg01->Add(gr_P_DAMPE_lst_L1_trigger_rate);
   mg01->Add(gr_He_DAMPE_lst_L1_trigger_rate);
-  //mg01->SetMinimum(1.0e3);
+  mg01->Add(gr_P_He_DAMPE_lst_L1_trigger_rate);
+  mg01->Add(gr_lst_L1_trigger_DCR_rate);  
+  mg01->SetMinimum(2.0e2);
   //mg01->SetMaximum(1.0e8);
   mg01->Draw("APL");
   //mg01->GetXaxis()->SetTitle("Energy, TeV");
@@ -182,7 +194,7 @@ void load_data_file(TString fileInName, T *gr, Int_t &np, Double_t &thMin, Doubl
     fileIn>>mot>>mot;
     while(fileIn>>threshold>>rate){
       npoints_tot = gr->GetN();
-      gr->SetPoint(npoints_tot,threshold,rate);
+      gr->SetPoint(npoints_tot,threshold/6.5,rate);
       if(gr->GetN()==1)
 	thMin = threshold;
       //gr->SetPointError(npoints_tot,ekin*0.05,TMath::Sqrt(ftot));
@@ -195,4 +207,16 @@ void load_data_file(TString fileInName, T *gr, Int_t &np, Double_t &thMin, Doubl
     cout<<"Unable to open file \n";
   }
   np=gr->GetN();
+}
+
+template <class T>
+void operation_graph( Double_t (*operation)(Double_t, Double_t), T *gr1, T *gr2, T *grs, Int_t n, Double_t xmin, Double_t xmax){
+  //void add_graph( T *gr1, T *gr2, T *grs, Int_t n, Double_t xmin, Double_t xmax){
+  Double_t x, y1, y2;
+  for( Int_t i = 0; i < n; i++){
+    x = xmin + (xmax-xmin)/(n-1)*i;
+    y1 = gr1->Eval(x);
+    y2 = gr2->Eval(x);
+    grs->SetPoint(i,x,operation(y1,y2));    
+  }
 }
